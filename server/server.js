@@ -14,8 +14,24 @@ app.use(express.static(publicPath));
 
 
 io.on('connection', (socket) => {
+	// socket emit from Admin 
+	// "Welcome to the chat app"
 	console.log("New user connected");
+	socket.emit('newMessage', {
+		from: "Admin",
+		text: "Welcome to the chat app"
+	});
 
+	// socket broadcast to everyone but the user who joined
+	// "New user joined"
+	socket.broadcast.emit('newMessage', {
+		from: "Admin",
+		text: "New user joined",
+		createdAt: new Date().getTime()
+	});
+
+	// An actual event is being emitted from the server.
+	// This can be fired from a client side
 	socket.on('createMessage', (message) => {
 		console.log('createMessage', message);
 		io.emit('newMessage', {
@@ -25,11 +41,6 @@ io.on('connection', (socket) => {
 		})
 	});
 
-	// socket.emit('newMessage', {
-	// 	from: "JuanSolo",
-	// 	text: "Hey man. We still up for dinner later tonite?",
-	// 	createdAt: 123456
-	// })
 
 	socket.on('disconnect', () => {
 		console.log("User has disconnected");
