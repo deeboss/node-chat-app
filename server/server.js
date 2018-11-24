@@ -26,9 +26,10 @@ io.on('connection', (socket) => {
 
 	// An actual event is being emitted from the server.
 	// This can be fired from a client side
-	socket.on('createMessage', (message) => {
+	socket.on('createMessage', (message, callback) => {
 		console.log('createMessage', message);
 		io.emit('newMessage', generateMessage(message.from, message.text));
+		callback("This is from the server");
 	});
 
 
