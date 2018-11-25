@@ -15,25 +15,30 @@ socket.on('disconnect', function(){
 
 // Fires when there is a new message that is being emitted from the server
 socket.on('newMessage', function(message){
-	// console.log("New incoming message", message);
 	var formattedTime = moment(message.createdAt).format('h:mm a');
-	var li = $('<li></li>');
-	li.text(`${message.from} ${formattedTime}: ${message.text}`);
+	// $('#messages').append(li);
 
-	$('#messages').append(li);
+	var template = $('#message-template').html();
+	var html = Mustache.render(template, {
+		text: message.text,
+		from: message.from,
+		createdAt: formattedTime
+	});
+
+	$('#messages').append(html);
 });
 
 socket.on('newLocationMessage', function(message) {
 	var formattedTime = moment(message.createdAt).format('h:mm a');
-	var li = $('<li></li>');
-	var a = $('<a target="_blank">My current location</a>');
+	var template = $('#location-message-template').html();
+	
+	var html = Mustache.render(template, {
+		from: message.from,
+		url: message.url,
+		createdAt: formattedTime
+	});
 
-	li.text(`${message.from} ${formattedTime}: `);
-	a.attr('href', message.url);
-
-	li.append(a);
-
-	$('#messages').append(li);
+	$('#messages').append(html);
 })
 
 $('#message-form').on('submit', function(e) {
