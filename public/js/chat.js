@@ -35,6 +35,16 @@ socket.on('disconnect', function(){
 });
 
 
+socket.on('updateUserList', function(users) {
+	let ol = $('<ol></ol>')
+
+	users.forEach(function(user) {
+		ol.append($('<li></li>').text(user));
+	});
+
+	$('#users').html(ol);
+})
+
 // Fires when there is a new message that is being emitted from the server
 socket.on('newMessage', function(message){
 	var formattedTime = moment(message.createdAt).format('h:mm a');
